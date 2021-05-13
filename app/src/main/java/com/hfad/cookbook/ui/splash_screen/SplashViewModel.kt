@@ -1,4 +1,4 @@
-package com.hfad.cookbook.splash_screen
+package com.hfad.cookbook.ui.splash_screen
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/menu_popular"
+        android:title="@string/menu_popular"
+        android:icon="@drawable/ic_fire" />
+    <item
+        android:id="@+id/menu_categories"
+        android:title="@string/menu_categories"
+        android:icon="@drawable/ic_restaurant" />
+    <item
+        android:id="@+id/menu_featured"
+        android:title="@string/menu_featured"
+        android:icon="@drawable/ic_featured" />
+</menu>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/navigation_main"
+    app:startDestination="@id/menu_popular">
+
+    <fragment
+        android:id="@+id/menu_popular"
+        android:name="com.hfad.cookbook.ui.main_screen.popular.PopularFragment"
+        android:label="@string/menu_popular"
+        tools:layout="@layout/popular_fragment" />
+
+    <fragment
+        android:id="@+id/menu_categories"
+        android:name="com.hfad.cookbook.ui.main_screen.categories.CategoriesFragment"
+        android:label="@string/menu_categories"
+        tools:layout="@layout/categories_fragment" />
+    <fragment
+        android:id="@+id/menu_featured"
+        android:name="com.hfad.cookbook.ui.main_screen.featured.FeaturedFragment"
+        android:label="@string/menu_featured"
+        tools:layout="@layout/featured_fragment" />
+
+</navigation>

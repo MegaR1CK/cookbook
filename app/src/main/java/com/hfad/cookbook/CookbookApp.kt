@@ -1,6 +1,7 @@
 package com.hfad.cookbook
 
 import android.app.Application
+import com.hfad.cookbook.di.dataModule
 import com.hfad.cookbook.di.viewModelModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
@@ -14,7 +15,7 @@ class CookbookApp : Application() {
         startKoin {
             androidLogger(Level.ERROR)
             androidContext(this@CookbookApp)
-            modules(viewModelModule)
+            modules(viewModelModule, dataModule)
         }
     }
 }
