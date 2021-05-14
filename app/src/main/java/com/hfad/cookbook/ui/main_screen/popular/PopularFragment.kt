@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.GridLayoutManager
 import com.hfad.cookbook.databinding.FragmentPopularBinding
 import com.hfad.cookbook.ui.main_screen.RecipeCardsAdapter
 import org.koin.android.ext.android.inject
@@ -20,13 +21,19 @@ class PopularFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater,
                               container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+                              savedInstanceState: Bundle?): View {
 
         val binding = FragmentPopularBinding.inflate(inflater)
         binding.lifecycleOwner = this
         binding.viewModel = viewModel
         binding.recipeCardsList.adapter = adapter
-
+        val manager = binding.recipeCardsList.layoutManager as GridLayoutManager
+        manager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
+            override fun getSpanSize(position: Int) = when (position) {
+                adapter.itemCount - 1 -> 2
+                else -> 1
+            }
+        }
         return binding.root
     }
 
