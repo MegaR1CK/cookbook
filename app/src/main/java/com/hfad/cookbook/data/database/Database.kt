@@ -10,8 +10,11 @@ interface CachedRecipesDao {
     @Query("select * from cached_recipe_cards")
     fun getRecipeCards(): LiveData<List<DatabaseRecipeCard>>
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertRecipeCards(vararg recipes: DatabaseRecipeCard)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    suspend fun insertRecipeCards(vararg recipes: DatabaseRecipeCard)
+
+    @Query("delete from cached_recipe_cards")
+    suspend fun clearRecipeCards()
 }
 
 @Database(entities = [DatabaseRecipeCard::class], version = 1)

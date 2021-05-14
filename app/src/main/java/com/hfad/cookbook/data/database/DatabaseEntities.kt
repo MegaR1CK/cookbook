@@ -6,7 +6,7 @@ import androidx.room.TypeConverters
 
 @Entity(tableName = "cached_recipe_cards")
 data class DatabaseRecipeCard(
-    @PrimaryKey
+    @PrimaryKey(autoGenerate = true)
     val id: Int,
     val title: String,
     val imageUrl: String,

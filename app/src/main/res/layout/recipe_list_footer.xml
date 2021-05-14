@@ -2,7 +2,9 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android">
 
     <data>
-
+        <variable
+            name="clickListener"
+            type="com.hfad.cookbook.ui.main_screen.RecipeCardsAdapter.FooterButtonClickListener" />
     </data>
 
     <FrameLayout
@@ -14,6 +16,7 @@
             android:layout_height="wrap_content"
             android:text="@string/load_more"
             android:layout_gravity="center_horizontal"
+            android:onClick="@{() -> clickListener.onClick()}"
             style="@style/Widget.MaterialComponents.Button.TextButton" />
     </FrameLayout>
 </layout>

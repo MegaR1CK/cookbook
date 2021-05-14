@@ -16,9 +16,12 @@ class RecipeCardsRepository(private val database: RecipesDatabase) {
             it.asDomainModel()
         }
 
-    suspend fun refreshRecipeCards() = withContext(Dispatchers.IO) {
-        val cards = RecipesApi.recipeService.getPopularRecipes("20", null)
+    suspend fun loadNewRecipeCards(number: Int) = withContext(Dispatchers.IO) {
+        val cards = RecipesApi.recipeService.getPopularRecipes(number.toString(), null)
         database.cachedRecipeCardsDao.insertRecipeCards(*cards.asDatabaseModel())
     }
 
+    suspend fun clearRecipeCards() = withContext(Dispatchers.IO) {
+        database.cachedRecipeCardsDao.clearRecipeCards()
+    }
 }

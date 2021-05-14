@@ -7,7 +7,7 @@ import com.hfad.cookbook.data.network.NetworkRecipeContainer
 fun NetworkRecipeContainer.asDatabaseModel(): Array<DatabaseRecipeCard> {
     return recipes.map {
         DatabaseRecipeCard(
-            id = it.id!!,
+            id = 0,
             title = it.title ?: "",
             imageUrl = it.image ?: ""
         )

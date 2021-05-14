@@ -9,12 +9,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.hfad.cookbook.R
 import com.hfad.cookbook.data.domain.RecipeCard
 import com.hfad.cookbook.databinding.RecipeCardBinding
+import com.hfad.cookbook.databinding.RecipeListFooterBinding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class RecipeCardsAdapter :
+class RecipeCardsAdapter(private val footerClickListener: FooterButtonClickListener) :
     ListAdapter<DataItem, RecyclerView.ViewHolder>(DiffCallback) {
 
     private val ITEM_VIEW_TYPE_FOOTER = 0
@@ -48,14 +49,24 @@ class RecipeCardsAdapter :
         }
     }
 
-    class FooterViewHolder private constructor(view: View) : RecyclerView.ViewHolder(view) {
+    class FooterViewHolder private constructor(private val binding: RecipeListFooterBinding) :
+        RecyclerView.ViewHolder(binding.root) {
+
+        fun bind(clickListener: FooterButtonClickListener) {
+            binding.clickListener = clickListener
+        }
+
         companion object {
             fun from(parent: ViewGroup): FooterViewHolder {
                 val inflater = LayoutInflater.from(parent.context)
-                val view = inflater.inflate(R.layout.recipe_list_footer, parent, false)
-                return FooterViewHolder(view)
+                val binding = RecipeListFooterBinding.inflate(inflater, parent, false)
+                return FooterViewHolder(binding)
             }
         }
+    }
+
+    class FooterButtonClickListener(private val clickListener: () -> Unit) {
+        fun onClick() = clickListener.invoke()
     }
 
     fun addFooterAndSubmitList(list: List<RecipeCard>?) {
@@ -86,6 +97,7 @@ class RecipeCardsAdapter :
                 val item = getItem(position) as DataItem.RecipeCardItem
                 holder.bind(item.recipeCard)
             }
+            is FooterViewHolder -> holder.bind(footerClickListener)
         }
     }
 }

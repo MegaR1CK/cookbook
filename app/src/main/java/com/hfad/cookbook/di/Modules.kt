@@ -17,6 +17,3 @@ val dataModule = module {
     single { RecipesDatabase.getDatabase(androidContext()) }
     single { RecipeCardsRepository(get()) }
 }
-val uiModule = module {
-    factory { RecipeCardsAdapter() }
-}
