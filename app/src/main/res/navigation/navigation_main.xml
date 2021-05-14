@@ -9,17 +9,17 @@
         android:id="@+id/menu_popular"
         android:name="com.hfad.cookbook.ui.main_screen.popular.PopularFragment"
         android:label="@string/menu_popular"
-        tools:layout="@layout/popular_fragment" />
+        tools:layout="@layout/fragment_popular" />
 
     <fragment
         android:id="@+id/menu_categories"
         android:name="com.hfad.cookbook.ui.main_screen.categories.CategoriesFragment"
         android:label="@string/menu_categories"
-        tools:layout="@layout/categories_fragment" />
+        tools:layout="@layout/fragment_categories" />
     <fragment
         android:id="@+id/menu_featured"
         android:name="com.hfad.cookbook.ui.main_screen.featured.FeaturedFragment"
         android:label="@string/menu_featured"
-        tools:layout="@layout/featured_fragment" />
+        tools:layout="@layout/fragment_featured" />
 
 </navigation>

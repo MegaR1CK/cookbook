@@ -1,6 +1,5 @@
 package com.hfad.cookbook.ui.main_screen.popular
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hfad.cookbook.repository.RecipeCardsRepository
