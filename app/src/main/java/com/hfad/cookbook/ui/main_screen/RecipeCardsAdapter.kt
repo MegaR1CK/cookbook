@@ -3,6 +3,7 @@ package com.hfad.cookbook.ui.main_screen
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.LiveData
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -10,12 +11,14 @@ import com.hfad.cookbook.R
 import com.hfad.cookbook.data.domain.RecipeCard
 import com.hfad.cookbook.databinding.RecipeCardBinding
 import com.hfad.cookbook.databinding.RecipeListFooterBinding
+import com.hfad.cookbook.repository.RecipeCardsRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class RecipeCardsAdapter(private val footerClickListener: FooterButtonClickListener) :
+class RecipeCardsAdapter(private val footerClickListener: FooterButtonClickListener,
+                         private val status: LiveData<RecipeCardsRepository.RecipeApiStatus>) :
     ListAdapter<DataItem, RecyclerView.ViewHolder>(DiffCallback) {
 
     private val ITEM_VIEW_TYPE_FOOTER = 0
@@ -52,8 +55,25 @@ class RecipeCardsAdapter(private val footerClickListener: FooterButtonClickListe
     class FooterViewHolder private constructor(private val binding: RecipeListFooterBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(clickListener: FooterButtonClickListener) {
+        fun bind(clickListener: FooterButtonClickListener, status: LiveData<RecipeCardsRepository.RecipeApiStatus>) {
             binding.clickListener = clickListener
+            status.observeForever {
+                when (it) {
+                    RecipeCardsRepository.RecipeApiStatus.LOADING_MORE -> {
+                        binding.moreButton.visibility = View.INVISIBLE
+                        binding.moreProgress.visibility = View.VISIBLE
+                    }
+                    RecipeCardsRepository.RecipeApiStatus.DONE -> {
+                        binding.moreButton.visibility = View.VISIBLE
+                        binding.moreProgress.visibility = View.INVISIBLE
+                    }
+                    RecipeCardsRepository.RecipeApiStatus.LOADING_FIRST -> {
+                        binding.moreButton.visibility = View.INVISIBLE
+                        binding.moreProgress.visibility = View.INVISIBLE
+                    }
+                    else -> {}
+                }
+            }
         }
 
         companion object {
@@ -97,7 +117,7 @@ class RecipeCardsAdapter(private val footerClickListener: FooterButtonClickListe
                 val item = getItem(position) as DataItem.RecipeCardItem
                 holder.bind(item.recipeCard)
             }
-            is FooterViewHolder -> holder.bind(footerClickListener)
+            is FooterViewHolder -> holder.bind(footerClickListener, status)
         }
     }
 }

@@ -7,18 +7,41 @@
         <variable
             name="viewModel"
             type="com.hfad.cookbook.ui.main_screen.popular.PopularViewModel" />
+
+        <import type="android.view.View" />
+        <import type="com.hfad.cookbook.repository.RecipeCardsRepository.RecipeApiStatus" />
     </data>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recipe_cards_list"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:padding="4dp"
-        android:clipToPadding="false"
-        app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-        app:spanCount="2"
-        app:dataList="@{viewModel.recipeCards}"
-        tools:itemCount="8"
-        tools:listitem="@layout/recipe_card"
-        tools:context=".ui.main_screen.popular.PopularFragment" />
+        android:layout_height="match_parent">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recipe_cards_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="4dp"
+            android:clipToPadding="false"
+            android:visibility="@{!viewModel.recipeCards.empty ? View.VISIBLE : View.GONE}"
+            app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+            app:spanCount="2"
+            app:dataList="@{viewModel.recipeCards}"
+            tools:itemCount="8"
+            tools:listitem="@layout/recipe_card"
+            tools:context=".ui.main_screen.popular.PopularFragment" />
+
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:visibility="@{viewModel.status == RecipeApiStatus.LOADING_FIRST ? View.VISIBLE : View.GONE}"/>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_connection_error"
+            android:layout_gravity="center"
+            android:visibility="@{viewModel.status == RecipeApiStatus.ERROR &amp;&amp; viewModel.recipeCards.empty ? View.VISIBLE : View.GONE}" />
+
+    </FrameLayout>
 </layout>

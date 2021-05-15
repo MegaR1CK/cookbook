@@ -28,11 +28,11 @@ class PopularFragment : Fragment() {
         binding.viewModel = viewModel
 
         val adapter = RecipeCardsAdapter(RecipeCardsAdapter.FooterButtonClickListener {
-            viewModel.loadNewRecipeCards(30)
-        })
+            viewModel.loadMoreRecipeCards()
+        }, viewModel.status)
         adapter.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
             override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
-                if (itemCount == 50) {
+                if (adapter.itemCount == 51) {
                     binding.recipeCardsList.scrollToPosition(0)
                 }
             }
