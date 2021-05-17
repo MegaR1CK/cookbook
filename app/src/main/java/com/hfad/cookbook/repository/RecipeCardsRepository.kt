@@ -11,8 +11,6 @@ import com.hfad.cookbook.data.network.RecipesApi
 
 class RecipeCardsRepository(private val database: RecipesDatabase) {
 
-    enum class RecipeApiStatus { LOADING_FIRST, LOADING_MORE, DONE, ERROR}
-
     private val _recipeCards: MutableLiveData<List<RecipeCard>> =
         Transformations.map(database.cachedRecipeCardsDao.getRecipeCards()) {
         it.asDomainModel()
@@ -55,7 +53,5 @@ class RecipeCardsRepository(private val database: RecipesDatabase) {
         database.cachedRecipeCardsDao.insertRecipeCards(*result)
     }
 
-    suspend fun clearRecipeCards() {
-        database.cachedRecipeCardsDao.clearRecipeCards()
-    }
+    enum class RecipeApiStatus { LOADING_FIRST, LOADING_MORE, DONE, ERROR}
 }

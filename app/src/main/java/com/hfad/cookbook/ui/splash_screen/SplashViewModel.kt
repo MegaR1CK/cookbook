@@ -2,12 +2,12 @@ package com.hfad.cookbook.ui.splash_screen
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.hfad.cookbook.base.CoroutinesViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-class SplashViewModel : CoroutinesViewModel() {
+class SplashViewModel : ViewModel() {
     
     private val _navigateToHomeEvent = MutableLiveData<Boolean>()
     val navigateToHomeEvent: LiveData<Boolean>

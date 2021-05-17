@@ -27,11 +27,10 @@ object RecipesApi {
         .add(KotlinJsonAdapterFactory())
         .build()
 
-    private val retrofit: Retrofit = Retrofit.Builder()
+    val recipeService: RecipesService = Retrofit.Builder()
         .baseUrl(BASE_URL)
         .addConverterFactory(MoshiConverterFactory.create(moshi))
         .addCallAdapterFactory(CoroutineCallAdapterFactory())
         .build()
-
-    val recipeService = retrofit.create(RecipesService::class.java)
+        .create(RecipesService::class.java)
 }

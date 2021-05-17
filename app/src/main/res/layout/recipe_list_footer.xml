@@ -6,6 +6,11 @@
         <variable
             name="clickListener"
             type="com.hfad.cookbook.ui.main_screen.RecipeCardsAdapter.FooterButtonClickListener" />
+        <variable
+            name="status"
+            type="androidx.lifecycle.LiveData&lt;com.hfad.cookbook.repository.RecipeCardsRepository.RecipeApiStatus&gt;" />
+        <import type="com.hfad.cookbook.repository.RecipeCardsRepository.RecipeApiStatus" />
+        <import type="android.view.View" />
     </data>
 
     <FrameLayout
@@ -19,6 +24,7 @@
             android:text="@string/load_more"
             android:layout_gravity="center_horizontal"
             android:onClick="@{() -> clickListener.onClick()}"
+            android:visibility="@{status == RecipeApiStatus.DONE ? View.VISIBLE : View.INVISIBLE}"
             style="@style/Widget.MaterialComponents.Button.TextButton" />
 
         <ProgressBar
@@ -26,6 +32,6 @@
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_gravity="center"
-            android:visibility="invisible"/>
+            android:visibility="@{status == RecipeApiStatus.LOADING_MORE ? View.VISIBLE : View.INVISIBLE}" />
     </FrameLayout>
 </layout>

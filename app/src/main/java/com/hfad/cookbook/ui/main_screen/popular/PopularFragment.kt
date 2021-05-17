@@ -18,6 +18,7 @@ class PopularFragment : Fragment() {
     }
 
     private val viewModel: PopularViewModel by inject()
+    private lateinit var adapter: RecipeCardsAdapter
 
     override fun onCreateView(inflater: LayoutInflater,
                               container: ViewGroup?,
@@ -27,7 +28,7 @@ class PopularFragment : Fragment() {
         binding.lifecycleOwner = this
         binding.viewModel = viewModel
 
-        val adapter = RecipeCardsAdapter(RecipeCardsAdapter.FooterButtonClickListener {
+        adapter = RecipeCardsAdapter(RecipeCardsAdapter.FooterButtonClickListener {
             viewModel.loadMoreRecipeCards()
         }, viewModel.status)
         adapter.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
@@ -47,5 +48,10 @@ class PopularFragment : Fragment() {
             }
         }
         return binding.root
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        adapter.setLifecycleDestroyed()
     }
 }

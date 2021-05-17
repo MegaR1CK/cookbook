@@ -1,13 +1,14 @@
 package com.hfad.cookbook.ui.main_screen
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.LifecycleRegistry
 import androidx.lifecycle.LiveData
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.hfad.cookbook.R
 import com.hfad.cookbook.data.domain.RecipeCard
 import com.hfad.cookbook.databinding.RecipeCardBinding
 import com.hfad.cookbook.databinding.RecipeListFooterBinding
@@ -21,10 +22,6 @@ class RecipeCardsAdapter(private val footerClickListener: FooterButtonClickListe
                          private val status: LiveData<RecipeCardsRepository.RecipeApiStatus>) :
     ListAdapter<DataItem, RecyclerView.ViewHolder>(DiffCallback) {
 
-    private val ITEM_VIEW_TYPE_FOOTER = 0
-    private val ITEM_VIEW_TYPE_ITEM = 1
-    private val adapterScope = CoroutineScope(Dispatchers.Default)
-
     companion object DiffCallback : DiffUtil.ItemCallback<DataItem>() {
         override fun areItemsTheSame(oldItem: DataItem, newItem: DataItem): Boolean {
             return oldItem.id == newItem.id
@@ -35,66 +32,10 @@ class RecipeCardsAdapter(private val footerClickListener: FooterButtonClickListe
         }
     }
 
-    class RecipeCardViewHolder private constructor(private val binding: RecipeCardBinding) :
-        RecyclerView.ViewHolder(binding.root) {
-
-        fun bind(card: RecipeCard) {
-            binding.recipeCard = card
-            binding.executePendingBindings()
-        }
-
-        companion object {
-            fun from(parent: ViewGroup): RecipeCardViewHolder {
-                val inflater = LayoutInflater.from(parent.context)
-                val binding = RecipeCardBinding.inflate(inflater, parent, false)
-                return RecipeCardViewHolder(binding)
-            }
-        }
-    }
-
-    class FooterViewHolder private constructor(private val binding: RecipeListFooterBinding) :
-        RecyclerView.ViewHolder(binding.root) {
-
-        fun bind(clickListener: FooterButtonClickListener, status: LiveData<RecipeCardsRepository.RecipeApiStatus>) {
-            binding.clickListener = clickListener
-            status.observeForever {
-                when (it) {
-                    RecipeCardsRepository.RecipeApiStatus.LOADING_MORE -> {
-                        binding.moreButton.visibility = View.INVISIBLE
-                        binding.moreProgress.visibility = View.VISIBLE
-                    }
-                    RecipeCardsRepository.RecipeApiStatus.DONE -> {
-                        binding.moreButton.visibility = View.VISIBLE
-                        binding.moreProgress.visibility = View.INVISIBLE
-                    }
-                    RecipeCardsRepository.RecipeApiStatus.LOADING_FIRST -> {
-                        binding.moreButton.visibility = View.INVISIBLE
-                        binding.moreProgress.visibility = View.INVISIBLE
-                    }
-                    else -> {}
-                }
-            }
-        }
-
-        companion object {
-            fun from(parent: ViewGroup): FooterViewHolder {
-                val inflater = LayoutInflater.from(parent.context)
-                val binding = RecipeListFooterBinding.inflate(inflater, parent, false)
-                return FooterViewHolder(binding)
-            }
-        }
-    }
-
-    class FooterButtonClickListener(private val clickListener: () -> Unit) {
-        fun onClick() = clickListener.invoke()
-    }
-
-    fun addFooterAndSubmitList(list: List<RecipeCard>?) {
-        adapterScope.launch {
-            val items = list?.map { DataItem.RecipeCardItem(it) }?.plus(listOf(DataItem.Footer))
-            withContext(Dispatchers.Main) { submitList(items) }
-        }
-    }
+    private val ITEM_VIEW_TYPE_FOOTER = 0
+    private val ITEM_VIEW_TYPE_ITEM = 1
+    private val adapterScope = CoroutineScope(Dispatchers.Default)
+    private lateinit var footerHolder: FooterViewHolder
 
     override fun getItemViewType(position: Int): Int {
         return when(getItem(position)) {
@@ -106,7 +47,11 @@ class RecipeCardsAdapter(private val footerClickListener: FooterButtonClickListe
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
             ITEM_VIEW_TYPE_ITEM -> RecipeCardViewHolder.from(parent)
-            ITEM_VIEW_TYPE_FOOTER -> FooterViewHolder.from(parent)
+            ITEM_VIEW_TYPE_FOOTER -> {
+                footerHolder = FooterViewHolder.from(parent)
+                footerHolder.markCreated()
+                footerHolder
+            }
             else -> throw ClassCastException("Unknown viewType $viewType")
         }
     }
@@ -119,5 +64,97 @@ class RecipeCardsAdapter(private val footerClickListener: FooterButtonClickListe
             }
             is FooterViewHolder -> holder.bind(footerClickListener, status)
         }
+    }
+
+    override fun onViewAttachedToWindow(holder: RecyclerView.ViewHolder) {
+        super.onViewAttachedToWindow(holder)
+        if (holder is FooterViewHolder) { holder.markAttach() }
+    }
+
+    override fun onViewDetachedFromWindow(holder: RecyclerView.ViewHolder) {
+        super.onViewDetachedFromWindow(holder)
+        if (holder is FooterViewHolder) { holder.markDetach() }
+    }
+
+    fun setLifecycleDestroyed() = footerHolder.markDestroyed()
+
+    fun addFooterAndSubmitList(list: List<RecipeCard>?) {
+        adapterScope.launch {
+            val items = list?.map { DataItem.RecipeCardItem(it) }?.plus(listOf(DataItem.Footer))
+            withContext(Dispatchers.Main) { submitList(items) }
+        }
+    }
+
+
+    class RecipeCardViewHolder private constructor(private val binding: RecipeCardBinding) :
+        RecyclerView.ViewHolder(binding.root) {
+
+        companion object {
+            fun from(parent: ViewGroup): RecipeCardViewHolder {
+                val inflater = LayoutInflater.from(parent.context)
+                val binding = RecipeCardBinding.inflate(inflater, parent, false)
+                return RecipeCardViewHolder(binding)
+            }
+        }
+
+        fun bind(card: RecipeCard) {
+            binding.recipeCard = card
+            binding.executePendingBindings()
+        }
+    }
+
+    class FooterViewHolder private constructor(private val binding: RecipeListFooterBinding) :
+        RecyclerView.ViewHolder(binding.root), LifecycleOwner {
+
+        companion object {
+            fun from(parent: ViewGroup): FooterViewHolder {
+                val inflater = LayoutInflater.from(parent.context)
+                val binding = RecipeListFooterBinding.inflate(inflater, parent, false)
+                val holder = FooterViewHolder(binding)
+                binding.lifecycleOwner = holder
+                return holder
+            }
+        }
+
+        private val lifecycleRegistry = LifecycleRegistry(this)
+        private var wasPaused = false
+
+        init {
+            lifecycleRegistry.currentState = Lifecycle.State.INITIALIZED
+        }
+
+        override fun getLifecycle() = lifecycleRegistry
+
+        fun markCreated() {
+            lifecycleRegistry.currentState = Lifecycle.State.CREATED
+        }
+
+        fun markAttach() {
+            if (wasPaused) {
+                lifecycleRegistry.currentState = Lifecycle.State.RESUMED
+                wasPaused = false
+            }
+            else {
+                lifecycleRegistry.currentState = Lifecycle.State.STARTED
+            }
+        }
+
+        fun markDetach() {
+            wasPaused = true
+            lifecycleRegistry.currentState = Lifecycle.State.CREATED
+        }
+
+        fun markDestroyed() {
+            lifecycleRegistry.currentState = Lifecycle.State.DESTROYED
+        }
+
+        fun bind(clickListener: FooterButtonClickListener, status: LiveData<RecipeCardsRepository.RecipeApiStatus>) {
+            binding.clickListener = clickListener
+            binding.status = status
+        }
+    }
+
+    class FooterButtonClickListener(private val clickListener: () -> Unit) {
+        fun onClick() = clickListener.invoke()
     }
 }
