@@ -70,7 +70,9 @@ class RecipeCardsAdapter(private val footerClickListener: FooterButtonClickListe
         if (holder is FooterViewHolder) { holder.markDetach() }
     }
 
-    fun setLifecycleDestroyed() = footerHolder.markDestroyed()
+    fun setLifecycleDestroyed() {
+        if (::footerHolder.isInitialized) { footerHolder.markDestroyed() }
+    }
 
     fun addFooterAndSubmitList(list: List<RecipeCard>?) {
         adapterScope.launch {
