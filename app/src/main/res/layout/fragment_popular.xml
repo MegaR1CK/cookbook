@@ -36,12 +36,27 @@
             android:layout_gravity="center"
             android:visibility="@{viewModel.status == RecipeApiStatus.LOADING_FIRST ? View.VISIBLE : View.GONE}"/>
 
-        <ImageView
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_connection_error"
+            android:orientation="vertical"
             android:layout_gravity="center"
-            android:visibility="@{viewModel.status == RecipeApiStatus.ERROR &amp;&amp; viewModel.recipeCards.empty ? View.VISIBLE : View.GONE}" />
+            android:visibility="@{viewModel.status == RecipeApiStatus.ERROR &amp;&amp; viewModel.recipeCards.empty ? View.VISIBLE : View.GONE}">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_connection_error"
+                android:layout_gravity="center" />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:text="@string/load_retry"
+                android:onClick="@{() -> viewModel.loadRecipeCards()}"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton" />
+        </LinearLayout>
 
     </FrameLayout>
 </layout>

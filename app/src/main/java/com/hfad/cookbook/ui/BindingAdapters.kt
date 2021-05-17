@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.hfad.cookbook.R
 import com.hfad.cookbook.data.domain.RecipeCard
-import com.hfad.cookbook.ui.main_screen.RecipeCardsAdapter
+import com.hfad.cookbook.ui.main_screen.recipe_list.RecipeCardsAdapter
 
 @BindingAdapter("imageUrl")
 fun bindImage(imgView: ImageView, imgUrl: String?) {

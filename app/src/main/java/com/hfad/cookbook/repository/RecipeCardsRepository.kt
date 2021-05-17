@@ -22,6 +22,12 @@ class RecipeCardsRepository(private val database: RecipesDatabase) {
     val status: LiveData<RecipeApiStatus>
         get() = _status
 
+    private fun setErrorStatus(message: String?): RecipeApiStatus {
+        val status = RecipeApiStatus.ERROR
+        status.message = message
+        return status
+    }
+
     suspend fun loadRecipeCards() {
         try {
             _status.value = RecipeApiStatus.LOADING_FIRST
@@ -32,7 +38,7 @@ class RecipeCardsRepository(private val database: RecipesDatabase) {
             _status.value = RecipeApiStatus.DONE
         }
         catch (e: Exception) {
-            _status.value = RecipeApiStatus.ERROR
+            _status.value = setErrorStatus(e.message)
             _recipeCards.value = listOf()
         }
     }
@@ -44,7 +50,7 @@ class RecipeCardsRepository(private val database: RecipesDatabase) {
             _status.value = RecipeApiStatus.DONE
         }
         catch (e: Exception) {
-            _status.value = RecipeApiStatus.ERROR
+            _status.value = setErrorStatus(e.message)
         }
     }
 
@@ -53,5 +59,5 @@ class RecipeCardsRepository(private val database: RecipesDatabase) {
         database.cachedRecipeCardsDao.insertRecipeCards(*result)
     }
 
-    enum class RecipeApiStatus { LOADING_FIRST, LOADING_MORE, DONE, ERROR}
+    enum class RecipeApiStatus(var message: String? = null) { LOADING_FIRST, LOADING_MORE, DONE, ERROR }
 }

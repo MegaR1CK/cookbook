@@ -2,7 +2,6 @@ package com.hfad.cookbook.di
 
 import com.hfad.cookbook.data.database.RecipesDatabase
 import com.hfad.cookbook.repository.RecipeCardsRepository
-import com.hfad.cookbook.ui.main_screen.RecipeCardsAdapter
 import com.hfad.cookbook.ui.main_screen.popular.PopularViewModel
 import com.hfad.cookbook.ui.splash_screen.SplashViewModel
 import org.koin.android.ext.koin.androidContext

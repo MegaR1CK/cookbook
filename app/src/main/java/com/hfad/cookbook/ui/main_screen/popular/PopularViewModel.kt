@@ -15,12 +15,14 @@ class PopularViewModel : ViewModel(), KoinComponent {
     val status = repository.status
 
     init {
-        viewModelScope.launch {
-            repository.loadRecipeCards()
-        }
+        loadRecipeCards()
     }
 
     fun loadMoreRecipeCards() = viewModelScope.launch {
        repository.loadMoreRecipeCards()
+    }
+
+    fun loadRecipeCards() = viewModelScope.launch {
+        repository.loadRecipeCards()
     }
 }

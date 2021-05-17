@@ -7,8 +7,11 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.snackbar.Snackbar
+import com.hfad.cookbook.R
 import com.hfad.cookbook.databinding.FragmentPopularBinding
-import com.hfad.cookbook.ui.main_screen.RecipeCardsAdapter
+import com.hfad.cookbook.repository.RecipeCardsRepository
+import com.hfad.cookbook.ui.main_screen.recipe_list.RecipeCardsAdapter
 import org.koin.android.ext.android.inject
 
 class PopularFragment : Fragment() {
@@ -27,7 +30,26 @@ class PopularFragment : Fragment() {
         val binding = FragmentPopularBinding.inflate(inflater)
         binding.lifecycleOwner = this
         binding.viewModel = viewModel
+        setupList(binding)
 
+        viewModel.status.observe(viewLifecycleOwner) {
+            if (it == RecipeCardsRepository.RecipeApiStatus.ERROR) {
+                Snackbar.make(
+                    activity?.findViewById(android.R.id.content) as View,
+                    it.message ?: getString(R.string.unknown_error),
+                    Snackbar.LENGTH_LONG
+                ).show()
+            }
+        }
+        return binding.root
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        adapter.setLifecycleDestroyed()
+    }
+
+    private fun setupList(binding: FragmentPopularBinding) {
         adapter = RecipeCardsAdapter(RecipeCardsAdapter.FooterButtonClickListener {
             viewModel.loadMoreRecipeCards()
         }, viewModel.status)
@@ -47,11 +69,5 @@ class PopularFragment : Fragment() {
                 else -> 1
             }
         }
-        return binding.root
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        adapter.setLifecycleDestroyed()
     }
 }

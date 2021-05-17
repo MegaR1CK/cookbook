@@ -1,4 +1,4 @@
-package com.hfad.cookbook.ui.main_screen
+package com.hfad.cookbook.ui.main_screen.recipe_list
 
 import com.hfad.cookbook.data.domain.RecipeCard
 
