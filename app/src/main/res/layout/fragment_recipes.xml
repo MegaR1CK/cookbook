@@ -6,7 +6,7 @@
     <data>
         <variable
             name="viewModel"
-            type="com.hfad.cookbook.ui.main_screen.popular.PopularViewModel" />
+            type="com.hfad.cookbook.ui.main_screen.recipes.RecipesViewModel" />
 
         <import type="android.view.View" />
         <import type="com.hfad.cookbook.repository.RecipeCardsRepository.RecipeApiStatus" />
@@ -28,7 +28,7 @@
             app:dataList="@{viewModel.recipeCards}"
             tools:itemCount="8"
             tools:listitem="@layout/recipe_card"
-            tools:context=".ui.main_screen.popular.PopularFragment" />
+            tools:context=".ui.main_screen.recipes.RecipesFragment" />
 
         <ProgressBar
             android:layout_width="wrap_content"

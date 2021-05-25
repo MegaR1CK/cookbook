@@ -1,4 +1,4 @@
-package com.hfad.cookbook.ui.main_screen.popular
+package com.hfad.cookbook.ui.main_screen.recipes
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -7,7 +7,7 @@ import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
-class PopularViewModel : ViewModel(), KoinComponent {
+class RecipesViewModel : ViewModel(), KoinComponent {
 
     private val repository: RecipeCardsRepository by inject()
 

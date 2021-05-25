@@ -1,7 +1,6 @@
 <resources>
     <string name="app_name">Cookbook</string>
-    <string name="menu_popular">Popular recipes</string>
-    <string name="menu_categories">Categories</string>
+    <string name="menu_recipes">Popular recipes</string>
     <string name="menu_featured">Featured</string>
 
     <string name="load_more">More</string>

@@ -1,4 +1,4 @@
-package com.hfad.cookbook.ui.main_screen.popular
+package com.hfad.cookbook.ui.main_screen.recipes
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -9,25 +9,25 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.hfad.cookbook.R
-import com.hfad.cookbook.databinding.FragmentPopularBinding
+import com.hfad.cookbook.databinding.FragmentRecipesBinding
 import com.hfad.cookbook.repository.RecipeCardsRepository
 import com.hfad.cookbook.ui.main_screen.recipe_list.RecipeCardsAdapter
 import org.koin.android.ext.android.inject
 
-class PopularFragment : Fragment() {
+class RecipesFragment : Fragment() {
 
     companion object {
-        fun newInstance() = PopularFragment()
+        fun newInstance() = RecipesFragment()
     }
 
-    private val viewModel: PopularViewModel by inject()
+    private val viewModel: RecipesViewModel by inject()
     private lateinit var adapter: RecipeCardsAdapter
 
     override fun onCreateView(inflater: LayoutInflater,
                               container: ViewGroup?,
                               savedInstanceState: Bundle?): View {
 
-        val binding = FragmentPopularBinding.inflate(inflater)
+        val binding = FragmentRecipesBinding.inflate(inflater)
         binding.lifecycleOwner = this
         binding.viewModel = viewModel
         setupList(binding)
@@ -49,7 +49,7 @@ class PopularFragment : Fragment() {
         adapter.setLifecycleDestroyed()
     }
 
-    private fun setupList(binding: FragmentPopularBinding) {
+    private fun setupList(binding: FragmentRecipesBinding) {
         adapter = RecipeCardsAdapter(RecipeCardsAdapter.FooterButtonClickListener {
             viewModel.loadMoreRecipeCards()
         }, viewModel.status)
