@@ -1,63 +1,26 @@
 package com.hfad.cookbook.repository
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Transformations
-import com.hfad.cookbook.data.asDatabaseModel
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
+import androidx.paging.map
 import com.hfad.cookbook.data.asDomainModel
-import com.hfad.cookbook.data.database.RecipesDatabase
 import com.hfad.cookbook.data.domain.RecipeCard
-import com.hfad.cookbook.data.network.RecipesApi
+import com.hfad.cookbook.data.network.RecipesPagingSource
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
+import org.koin.core.component.KoinComponent
 
-class RecipeCardsRepository(private val database: RecipesDatabase) {
+class RecipeCardsRepository(private val pagingSource: RecipesPagingSource) : KoinComponent {
 
-    private val _recipeCards: MutableLiveData<List<RecipeCard>> =
-        Transformations.map(database.cachedRecipeCardsDao.getRecipeCards()) {
-        it.asDomainModel()
-        } as MutableLiveData
-    val recipeCards: LiveData<List<RecipeCard>>
-        get() = _recipeCards
+    val recipeCards = getRecipes()
 
-    private val _status = MutableLiveData<RecipeApiStatus>()
-    val status: LiveData<RecipeApiStatus>
-        get() = _status
-
-    private fun setErrorStatus(message: String?): RecipeApiStatus {
-        val status = RecipeApiStatus.ERROR
-        status.message = message
-        return status
-    }
-
-    suspend fun loadRecipeCards() {
-        try {
-            _status.value = RecipeApiStatus.LOADING_FIRST
-            val isDatabaseEmpty = database.cachedRecipeCardsDao.getRecipeCardsCount() == 0
-            if (isDatabaseEmpty) {
-                requestRecipeCards()
+    private fun getRecipes(): Flow<PagingData<RecipeCard>> {
+        val networkPagingData = Pager(PagingConfig(20, enablePlaceholders = false)) { pagingSource }.flow
+        return networkPagingData.map {
+            it.map {
+                it.asDomainModel()
             }
-            _status.value = RecipeApiStatus.DONE
-        }
-        catch (e: Exception) {
-            _status.value = setErrorStatus(e.message)
-            _recipeCards.value = listOf()
         }
     }
-
-    suspend fun loadMoreRecipeCards() {
-        try {
-            _status.value = RecipeApiStatus.LOADING_MORE
-            requestRecipeCards()
-            _status.value = RecipeApiStatus.DONE
-        }
-        catch (e: Exception) {
-            _status.value = setErrorStatus(e.message)
-        }
-    }
-
-    private suspend fun requestRecipeCards() {
-        val result = RecipesApi.recipeService.getPopularRecipes("50", null).asDatabaseModel()
-        database.cachedRecipeCardsDao.insertRecipeCards(*result)
-    }
-
-    enum class RecipeApiStatus(var message: String? = null) { LOADING_FIRST, LOADING_MORE, DONE, ERROR }
 }

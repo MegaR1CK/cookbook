@@ -1,19 +1,14 @@
 package com.hfad.cookbook.data
 
-import com.hfad.cookbook.data.database.DatabaseRecipeCard
 import com.hfad.cookbook.data.domain.RecipeCard
-import com.hfad.cookbook.data.network.NetworkRecipeContainer
+import com.hfad.cookbook.data.network.NetworkRecipe
 
-fun NetworkRecipeContainer.asDatabaseModel(): Array<DatabaseRecipeCard> {
-    return recipes.map {
-        DatabaseRecipeCard(
-            id = 0,
-            title = it.title ?: "",
-            imageUrl = it.image ?: ""
-        )
-    }.toTypedArray()
-}
-
-fun List<DatabaseRecipeCard>.asDomainModel(): List<RecipeCard> {
-    return map { RecipeCard(it.id, it.title, it.imageUrl) }
+fun NetworkRecipe.asDomainModel(): RecipeCard {
+    return RecipeCard(
+        id ?: 0,
+        title ?: "",
+        image ?: "",
+        readyInMinutes ?: 0,
+        spoonacularScore ?: 0.0
+    )
 }

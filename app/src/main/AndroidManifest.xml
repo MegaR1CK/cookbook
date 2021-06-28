@@ -14,18 +14,14 @@
         android:theme="@style/Theme.Cookbook"
         android:usesCleartextTraffic="true">
 
-        <activity android:name="com.hfad.cookbook.ui.main_screen.HomeActivity" />
-        <activity android:name="com.hfad.cookbook.ui.splash_screen.SplashActivity">
+        <activity android:name=".ui.splash_screen.SplashActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <meta-data
-            android:name="preloaded_fonts"
-            android:resource="@array/preloaded_fonts" />
+        <activity android:name="com.hfad.cookbook.ui.HomeActivity"/>
     </application>
 
 </manifest>
